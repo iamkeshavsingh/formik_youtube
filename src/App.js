@@ -1,10 +1,18 @@
 import "./App.css";
-import { Formik } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
 var signinSchema = Yup.object({
-  username: Yup.string().required("Username is Required"),
-  password: Yup.string().required("Password is Required"),
+  basic: Yup.object({
+    firstName: Yup.string().required("Full Name is required"),
+    lastName: Yup.string().required("Last Name is required"),
+  }),
+  contact: Yup.object({
+    mobile: Yup.string().required("Mobile is Required"),
+    email: Yup.string()
+      .required("Email is Required")
+      .email("Please Enter a Valid Email"),
+  }),
 });
 
 function App() {
@@ -14,56 +22,84 @@ function App() {
         <h4>Sign In</h4>
         <Formik
           initialValues={{
-            username: "",
-            password: "",
+            basic: {
+              firstName: "",
+              lastName: "",
+            },
+            contact: {
+              mobile: "",
+              email: "",
+            },
+            interest: [],
           }}
           onSubmit={(data) => {
             console.log(data);
           }}
           validationSchema={signinSchema}
         >
-          {({
-            values,
-            handleChange,
-            handleSubmit,
-            errors,
-            handleBlur,
-            touched,
-          }) => {
+          {({ errors, touched }) => {
             console.log("errors", errors);
             console.log("touched", touched);
             return (
-              <form onSubmit={handleSubmit}>
-                <div className="form-field">
-                  <label htmlFor="username"></label>
-                  <input
-                    type="text"
-                    id="username"
-                    className="form-control"
-                    placeholder="Enter Username"
-                    onChange={handleChange}
-                    value={values.username}
-                    onBlur={handleBlur}
-                  />
-                  <p>{touched.username && errors.username}</p>
+              <Form>
+                <div className="form-field m-4">
+                  <div>
+                    <h4 className="pt-2">Basic Info</h4>
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="First Name"
+                      name="basic.firstName"
+                    />
+                    {touched?.basic?.firstName && errors?.basic?.firstName}
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Last Name"
+                      name="basic.lastName"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="pt-2">Contact</h4>
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Mobile"
+                      name="contact.mobile"
+                    />
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Email"
+                      name="contact.email"
+                    />
+                  </div>
+                  <div>
+                    <h4 className="pt-2">Interest</h4>
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Interest 1"
+                      name="interest[0]"
+                    />
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Interest 2"
+                      name="interest[1]"
+                    />
+                    <Field
+                      className="form-control m-2"
+                      type="text"
+                      placeholder="Interest 3"
+                      name="interest[2]"
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary m-4">
+                    SignIn
+                  </button>
                 </div>
-                <div className="form-field">
-                  <label htmlFor="password"></label>
-                  <input
-                    type="password"
-                    id="password"
-                    className="form-control"
-                    placeholder="Enter password"
-                    onChange={handleChange}
-                    value={values.password}
-                    onBlur={handleBlur}
-                  />
-                  {touched.password && errors.password}
-                </div>
-                <button type="submit" className="btn btn-primary mt-4">
-                  Sign In
-                </button>
-              </form>
+              </Form>
             );
           }}
         </Formik>
